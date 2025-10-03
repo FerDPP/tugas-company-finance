@@ -1,7 +1,6 @@
 {
   "name": "airframe-dashboard",
   "version": "0.1.0",
-  "type": "module",
   "description": "Seed project for flexible light React/Bootstrap 4 dashboards.",
   "main": "index.js",
   "scripts": {
