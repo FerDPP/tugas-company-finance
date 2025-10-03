@@ -6,6 +6,7 @@ function Monitor() {
   const [branch, setBranch] = useState("");
   const [mainBranch, setMainBranch] = useState("");
   const [officer, setOfficer] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // 🔹 state search
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 25;
 
@@ -29,10 +30,14 @@ function Monitor() {
     if (branch) data = data.filter((c) => c.branch === branch);
     if (mainBranch) data = data.filter((c) => c.main_branch === mainBranch);
     if (officer) data = data.filter((c) => c.officer === officer);
+    if (searchTerm)
+      data = data.filter((c) =>
+        c.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
 
     setFiltered(data);
     setCurrentPage(1); // reset ke halaman pertama tiap kali filter berubah
-  }, [branch, mainBranch, officer, customers]);
+  }, [branch, mainBranch, officer, searchTerm, customers]);
 
   // hitung data per halaman
   const startIndex = (currentPage - 1) * pageSize;
@@ -48,6 +53,15 @@ function Monitor() {
 
       {/* Filter Controls */}
       <div style={{ marginBottom: "20px" }}>
+        {/* 🔍 Search Nama */}
+        <input
+          type="text"
+          placeholder="Cari nama customer..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ marginRight: "10px", padding: "5px" }}
+        />
+
         <select value={branch} onChange={(e) => setBranch(e.target.value)}>
           <option value="">All Branch</option>
           {[...new Set(customers.map((c) => c.branch))].map((b, i) => (
@@ -93,6 +107,7 @@ function Monitor() {
             <th>Branch</th>
             <th>Main Branch</th>
             <th>Officer</th>
+            <th>Type</th>
             <th>Email</th>
           </tr>
         </thead>
@@ -102,7 +117,7 @@ function Monitor() {
               <td>{startIndex + i + 1}</td>
               <td>{c.name}</td>
               <td>
-                {Number(c.total).toLocaleString("id-ID", {
+                {Number(c.amount).toLocaleString("id-ID", {
                   style: "currency",
                   currency: "IDR",
                 })}
@@ -110,6 +125,7 @@ function Monitor() {
               <td>{c.branch}</td>
               <td>{c.main_branch}</td>
               <td>{c.officer}</td>
+              <td>{c.type}</td>
               <td>{c.email}</td>
             </tr>
           ))}
