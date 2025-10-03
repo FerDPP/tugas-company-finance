@@ -108,7 +108,6 @@ export default function FinancialDashboard() {
 
       {/* Trends + Predictions Chart */}
       <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
-        {/* Trends + Predictions Chart */}
         <section style={{ flex: 1 }}>
           <h3>Trends & Predictions Omzet per Bulan</h3>
           <ResponsiveContainer width="100%" height={300}>
