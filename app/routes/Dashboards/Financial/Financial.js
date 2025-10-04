@@ -49,12 +49,25 @@ export default function FinancialDashboard() {
         setTrends(fixed);
       });
 
-    // --- Dummy kategori data ---
-    setCategories([
-      { name: "Type A", value: 350000000 },
-      { name: "Type B", value: 200000000 },
-      { name: "Type C", value: 450000000 },
-    ]);
+    fetch("http://localhost:3001/api/pipeline")
+      .then((res) => res.json())
+      .then((data) => {
+        // Grouping pipeline_value berdasarkan type
+        const grouped = data.reduce((acc, row) => {
+          if (!acc[row.type]) acc[row.type] = 0;
+          acc[row.type] += parseFloat(row.pipeline_value || 0);
+          return acc;
+        }, {});
+
+        // Ubah ke format chart
+        const categories = Object.entries(grouped).map(([type, value]) => ({
+          name: `Type ${type}`,
+          value,
+        }));
+
+        setCategories(categories);
+      })
+      .catch((err) => console.error("Error fetch pipeline:", err));
   }, []);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
@@ -82,6 +95,9 @@ export default function FinancialDashboard() {
               <th>No</th>
               <th>Nama</th>
               <th>Total Omzet</th>
+              <th>Nilai Pipeline</th>
+              <th>Officer</th>
+              <th>Type</th>
               <th>Email</th>
             </tr>
           </thead>
@@ -92,6 +108,9 @@ export default function FinancialDashboard() {
                   <td>{i + 1}</td>
                   <td>{c.name}</td>
                   <td>{formatRupiah(c.total)}</td>
+                  <td>{formatRupiah(c.pipeline_value)}</td>
+                  <td>{c.officer}</td>
+                  <td>{c.type}</td>
                   <td>{c.email}</td>
                 </tr>
               ))
@@ -108,6 +127,7 @@ export default function FinancialDashboard() {
 
       {/* Trends + Predictions Chart */}
       <div style={{ display: "flex", gap: "20px", marginTop: "30px" }}>
+        {/* Trends + Predictions Chart */}
         <section style={{ flex: 1 }}>
           <h3>Trends & Predictions Omzet per Bulan</h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -137,7 +157,7 @@ export default function FinancialDashboard() {
           </ResponsiveContainer>
         </section>
 
-        {/* Kategori Omzet */}
+        {/* Pipeline Potential */}
         <section style={{ flex: 1 }}>
           <h3>Customer's Pipeline Potential (Kategori)</h3>
           <ResponsiveContainer width="100%" height={300}>
