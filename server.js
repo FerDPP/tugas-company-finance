@@ -81,9 +81,9 @@ app.get("/api/omzet", async (req, res) => {
 app.get("/api/top-customers", async (req, res) => {
   try {
     const [rows] = await pool.query(`
-      SELECT id, name, email, branch, main_branch, SUM(amount) AS total
+      SELECT id, name, email, branch, main_branch, officer, category, type, pipeline_value, SUM(amount) AS total
       FROM customers
-      GROUP BY id, name, email, branch, main_branch
+      GROUP BY id, name, email, branch, main_branch, officer, category, type, pipeline_value
       ORDER BY total DESC
       LIMIT 10
     `);
