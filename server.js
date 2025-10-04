@@ -113,6 +113,22 @@ app.get("/api/trends", async (req, res) => {
 });
 
 // ==========================
+// Pipeline Potential Customers
+// ==========================
+app.get("/api/pipeline", async (req, res) => {
+  try {
+    const [rows] = await pool.query(`
+      SELECT type, pipeline_value
+      FROM customers
+    `);
+    res.json(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch trends" });
+  }
+});
+
+// ==========================
 // API Notifications
 // ==========================
 app.get("/api/notifications", async (req, res) => {
